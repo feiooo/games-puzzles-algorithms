@@ -16,23 +16,80 @@ import numpy as np
 * Delete the names and ccids below, and put
 # the names and ccids of all members of your group, including you. 
 # name                         ccid
-Daniel Levy                   danlevy
-Sarah Levy                    sarlevy
+Fei Yang                       fei5
+Tianying Xia                   
+JingZeng Xie
 
 #############################################
 # Your answer to question 1-a:
 
+*.*
+.**
+.*.
+
 #############################################
 # Your answer to question 1-b:
 
+********.*****...***......*******.*****
+
 #############################################
 # Your answer to question 2:
+1) What happened to num_nbrs in life-np.py?
+    num_nbrs in life.py is rewrited to line 84-92 in life-np.py.
+    num_nbrs in life.py is using 1-d list. Every c (c is the number
+    of columns) grids are treated as a row. Compared with life.py, 
+    life-np.py is using 2-d list to check whether A[j,k]'s neighbours 
+    are alive and store the the number of alive neighbours. (j iterates 
+    through the row of list and k runs through the column.) In life-np.py,
+    because there is no guarded board, line 84-92 also do border check.
+    
+2) How an infinite grid is implemented in life.py?
+    Modified the pad function can implement the infinite grid in life.py.
+    (a)if there is any alive cell in first row(non-guard):
+            create a new array with column-number size filled with dead cells;
+            add the new row before the first cell of the array(first non-guard row);
+            row number += 1;
+            
+       if there is any alive cell in last row(non-guard):
+            create a new array with column-number size filled with dead cells;
+            add the new row after the last cell of the array(last non-guard row);
+            row number += 1;
+            
+       if there is any alive cell in first column(non-guard):
+            create a new array with row-number size filled with dead cells;
+            from the first cell of the array, add each new cell every 
+            column-number cells (eg. if there are 3 columns, then add one new 
+            cell every 3 cells:
+            old: [*...**...]    new: [.*....**....]);
+            column number += 1;
+       if there is any alive cell in last column(non-guard):
+            create a new array with row-number size filled with dead cells;
+            from the (column)th cell of the array, add each new cell every 
+            column-number cells (eg. if there are 3 columns, then add one new 
+            cell every 3 cells:
+            old: [*...**...]    new: [*....**.....]);        
+            column number += 1;
+            
+    (add new alive cells and add guarded board in other functions, this function 
+    is just expand the board)
+            
+
+3) How the use of a guarded board simplifies num_nbrs?
+    With guarded board, num_nbrs don't need to check whether j will be 
+    out of range.
+
 
 #############################################
 # Follow the assignment 1 instructions and
 # make the changes requested in question 3.
 # Then come back and fill in the answer to
 # question 3-c:
+
+...*..........
+....**........
+...**.........
+..............
+..............
 
 #############################################
 """
@@ -108,6 +165,7 @@ Conway's next-state formula
 
 
 def next_state(A, r, c):
+    
     N = np.zeros((r, c), dtype=np.int8)
     changed = False
     for j in range(r):
@@ -153,9 +211,27 @@ and delete the raise error statement:
 """
 
 
-def next_state2():
+def next_state2(A, r, c):
+    N = np.zeros((r, c), dtype=np.int8)
+    changed = False
+    for j in range(r):
+        for k in range(c):
+            num = num_nbrs2(A,j,k,r,c)
+            if A[j, k] == ALIVE:
+                if num > 1 and num < 4:
+                    N[j, k] = ALIVE
+                else:
+                    N[j, k] = DEAD
+                    changed = True
+            else:
+                if num == 3:
+                    N[j, k] = ALIVE
+                    changed = True
+                else:
+                    N[j, k] = DEAD
+    return N, changed
 
-    raise NotImplementedError()
+    #raise NotImplementedError()
 #############################################
 
 
@@ -167,9 +243,27 @@ statement:
 """
 
 
-def num_nbrs2():
+def num_nbrs2(A,j,k,r,c):
+    num = 0
+    if j > 0 and k > 0 and A[j-1, k-1] == ALIVE:
+        num += 1
+    if j > 0 and A[j-1, k] == ALIVE:
+        num += 1
+    if j > 0 and k < c-1 and A[j-1, k+1] == ALIVE:
+        num += 1
+    if k > 0 and A[j, k-1] == ALIVE:
+        num += 1
+    if k < c-1 and A[j, k+1] == ALIVE:
+        num += 1
+    if j < r-1 and k > 0 and A[j+1, k-1] == ALIVE:
+        num += 1
+    if j < r-1 and A[j+1, k] == ALIVE:
+        num += 1
+    if j < r-1 and k < c-1 and A[j+1, k+1] == ALIVE:
+        num += 1
+    return num
 
-    raise NotImplementedError()
+    #raise NotImplementedError()
 #############################################
 
 
@@ -181,9 +275,27 @@ error statement:
 """
 
 
-def next_state_torus():
-
-    raise NotImplementedError()
+def next_state_torus(A, r, c):
+    N = np.zeros((r, c), dtype=np.int8)
+    changed = False
+    for j in range(r):
+        for k in range(c):
+            num = num_nbrs_torus(A,j,k,r,c)
+            if A[j, k] == ALIVE:
+                if num > 1 and num < 4:
+                    N[j, k] = ALIVE
+                else:
+                    N[j, k] = DEAD
+                    changed = True
+            else:
+                if num == 3:
+                    N[j, k] = ALIVE
+                    changed = True
+                else:
+                    N[j, k] = DEAD
+    return N, changed
+    #raise NotImplementedError()
+    
 #############################################
 
 
@@ -195,9 +307,26 @@ error statement:
 """
 
 
-def num_nbrs_torus():
-
-    raise NotImplementedError()
+def num_nbrs_torus(A,j,k,r,c):
+    num = 0
+    if A[(j-1+r)%r, (k-1+c)%c] == ALIVE:
+        num +=1
+    if A[(j-1+r)%r, k] == ALIVE:
+        num +=1
+    if A[(j-1+r)%r, (k+1+c)%c] == ALIVE:
+        num +=1
+    if A[j, (k-1+c)%c] == ALIVE:
+        num +=1
+    if A[j, (k+1+c)%c] == ALIVE:
+        num +=1
+    if A[(j+1+r)%r, (k-1+c)%c] == ALIVE:
+        num +=1
+    if A[(j+1+r)%r, k] == ALIVE:
+        num +=1
+    if A[(j+1+r)%r, (k+1+c)%c] == ALIVE:
+        num +=1             
+    return num
+    #raise NotImplementedError()
 #############################################
 
 
@@ -223,7 +352,8 @@ def interact(max_itn):
     print_array(A, r, c)
     while itn <= max_itn:
         sleep(pause)
-        newA, delta = next_state(A, r, c)
+        #newA, delta = next_state(A, r, c)
+        newA, delta = next_state_torus(A, r, c)
         if not delta:
             break
         itn += 1
@@ -233,7 +363,7 @@ def interact(max_itn):
 
 
 def main():
-    interact(99)
+    interact(178)
 
 
 if __name__ == '__main__':
