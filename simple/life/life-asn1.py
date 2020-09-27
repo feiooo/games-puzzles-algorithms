@@ -17,8 +17,8 @@ import numpy as np
 # the names and ccids of all members of your group, including you. 
 # name                         ccid
 Fei Yang                       fei5
-Tianying Xia                   
-JingZeng Xie
+Tianying Xia                   txia
+JingZeng Xie                   jingzeng
 
 #############################################
 # Your answer to question 1-a:
