@@ -1,0 +1,22 @@
+for both 15 puzzle and 15star:
+
+--perm = Permutation to solve. If none then chosen at random.
+
+--batch = Batch size. If n>0 then it solves n random puzzles, outputting the number of moves in the solution and the number of nodes visited during the run.
+
+for 15puzzle:
+
+--staging = What are the intermediate stages that the path passes through.
+There are 3 hardcoded options (line #154). Each option is an ordered partition, where each subset is to be solved before moving on, while keeping previous ones fixed.
+
+
+
+for 15star:
+
+--opt = Optimization percent, which is a discount ratio for the distance from source.
+A* is when opt=100. 0% ignores the cost of the path so far: it finds 
+the solution as fast as possible but with no cost guarantee.
+20% is a 5-approximation - it returns a path guaranteed to cost at most 5 times as much as the optimal path.
+50% is a 2-approx, 100% is a 1-approx, i.e. it finds a shortest path.
+Play around with these values on 3x4 puzzles to see how it works.
+There are descriptions in the comment for the Node class (line #71) for the meaning of other values as well.
