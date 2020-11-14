@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # classic ttt: 3x3 board          RBH 2016
 # - genmove finds value of all moves, using alphabeta search
 
@@ -29,7 +27,7 @@ class Transpos:
     self.value = value
 
 class Cell: # each cell is one of these: empty, x, o
-  n,e,x,o,chars = 9,0,1,2,'.xo'
+  n,e,x,o,chars = 9,0,1,2,'.xo' 
 
 def opponent(c): return 3-c
 
@@ -49,7 +47,7 @@ def min_iso(L): # using numpy array indexing here
   return min([board_to_int( L[Isos[j]] ) for j in range(8)])
 
 # convert from integer for board position
-def base_3( y ):
+def base_3( y ): 
   assert(y <= ttt_states)
   L = [0]*Cell.n
   for j in range(Cell.n):
@@ -58,7 +56,7 @@ def base_3( y ):
   return np.array( L, dtype = np.int16)
 
 # input-output ################################################
-def char_to_cell(c):
+def char_to_cell(c): 
   return Cell.chars.index(c)
 
 escape_ch   = '\033['
@@ -91,7 +89,7 @@ def printmenu():
 
 def showboard(psn):
   def paint(s):  # s   a string
-    if len(s)>1 and s[0]==' ':
+    if len(s)>1 and s[0]==' ': 
      return ' ' + paint(s[1:])
     x = Cell.chars.find(s[0])
     if x > 0:
@@ -100,7 +98,7 @@ def showboard(psn):
       return textcolor + s + colorend
     return s
 
-  pretty = '\n   '
+  pretty = '\n   ' 
   for c in range(3): # columns
     pretty += ' ' + paint(chr(ord('a')+c))
   pretty += '\n'
@@ -132,7 +130,7 @@ Win_lines = np.array(( # 8 winning lines, as location triples
 #   3 4 5
 #   6 7 8
 
-def rc_to_lcn(r,c):
+def rc_to_lcn(r,c): 
   return r*3 + c
 
 def lcn_to_alphanum(p):
@@ -143,7 +141,7 @@ class Position: # ttt board with x,o,e cells
   def legal_moves(self):
     L = []
     for j in range(Cell.n):
-      if self.brd[j]==Cell.e:
+      if self.brd[j]==Cell.e: 
         L.append(j)
     return L
 
@@ -201,7 +199,7 @@ class Position: # ttt board with x,o,e cells
             print(' ',Cell.chars[ptm],'plays',lcn_to_alphanum(cell),end='')
             ab, c = ab_neg(use_tt, AB, 0,0,self,opponent(ptm),-1,1)
             print('  result','{:2d}'.format(-ab), '  nodes',c)
-            self.brd[cell] = Cell.e
+            self.brd[cell] = Cell.e   
     else:
       print(request[2])
 
@@ -243,10 +241,10 @@ def ab_neg(use_tt, AB, calls, d, psn, ptm, alpha, beta): # ptm: 1/0/-1 win/draw/
       if alpha >= beta:
         return t_pos.value, 0
   calls += 1
-  if psn.has_win(ptm):
+  if psn.has_win(ptm):     
     return 1, calls  # previous move created win
   L = psn.legal_moves()
-  if len(L) == 0:
+  if len(L) == 0:          
     return 0, calls  # board full, no winner
   #A = psn.non_iso_moves(L,ptm)
   so_far = -1  # best score so far
@@ -271,7 +269,7 @@ def ab_neg(use_tt, AB, calls, d, psn, ptm, alpha, beta): # ptm: 1/0/-1 win/draw/
 def info(p, use_tt, AB):
     h, L = min_iso(p.brd), p.legal_moves()
     print('  min_iso', h, '\n  legal moves', L)
-    #print('  non-isomorphic moves x o', p.non_iso_moves(L,Cell.x),
+    #print('  non-isomorphic moves x o', p.non_iso_moves(L,Cell.x), 
                                         #p.non_iso_moves(L,Cell.o))
     for cell in (Cell.x, Cell.o):
       print('  ',Cell.chars[cell], 'alphabeta',end='')
@@ -309,3 +307,4 @@ def interact(use_tt):
       printmenu()
 
 interact(False)
+
